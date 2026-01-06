@@ -37,6 +37,7 @@ dependencies:
   pinput: any
   carousel_slider: any
   dots_indicator: any
+  http: any
 
 dev_dependencies:
   flutter_test:

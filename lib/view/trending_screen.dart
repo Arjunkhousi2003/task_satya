@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TrendingScreen extends StatelessWidget {
-  const TrendingScreen({Key? key}) : super(key: key);
+  final List trendingData;
+
+  const TrendingScreen({super.key, required this.trendingData});
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -24,7 +25,14 @@ class TrendingScreen extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: GridView.builder(
+      body: trendingData.isEmpty
+          ? const Center(
+        child: Text(
+          'No trending content available',
+          style: TextStyle(color: Colors.white),
+        ),
+      )
+          : GridView.builder(
         padding: const EdgeInsets.all(12),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
@@ -32,8 +40,9 @@ class TrendingScreen extends StatelessWidget {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
-        itemCount: 10,
+        itemCount: trendingData.length,
         itemBuilder: (context, index) {
+          final movie = trendingData[index];
           return Column(
             children: [
               Expanded(
@@ -44,18 +53,30 @@ class TrendingScreen extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      Center(
-                        child: Icon(
-                          Icons.movie,
-                          color: Colors.grey[700],
-                          size: 50,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          movie['poster'] ?? '',
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Icon(
+                                Icons.movie,
+                                color: Colors.grey[700],
+                                size: 50,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       Positioned(
                         top: 8,
                         left: 8,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
                             color: Colors.orange,
                             borderRadius: BorderRadius.circular(4),
@@ -70,7 +91,7 @@ class TrendingScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 2),
                               Text(
-                               '1',
+                                '${movie['imdbRating'] ?? 0}',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
@@ -81,10 +102,20 @@ class TrendingScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                movie['name'] ?? 'Title',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
               ),
             ],
           );

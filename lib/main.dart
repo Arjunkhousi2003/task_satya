@@ -40,7 +40,12 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/otp': (context) => const OtpScreen(),
         '/home': (context) => const HomeScreen(),
-        '/trending': (context) => const TrendingScreen(),
+        '/trending': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+          as List<Map<String, dynamic>>;
+
+          return TrendingScreen(trendingData: args);
+        },
       },
     );
   }
